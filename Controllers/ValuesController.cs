@@ -14,7 +14,7 @@ namespace WebApi.Controllers
         public IEnumerable<string> Get()
         {
           isRock.LineBot.Utility.PushMessage(
-              "Udb332b1f0570d0d9258c5961a6300554", "要傳送的訊息testtest", "LYc1mSavcMDT5lFguBwVcmMK/0T074PKr4/ZIaasO/kX1BubHb8bwKYKvRH9U80roys8DElYuy29lx76Xl6/+hQHdjbX2tGtsW5p0dK14UN0cOSz3eWmJiUBWGsIL05WUso1pLtIq6ljzx5YW0lMSgdB04t89/1O/w1cDnyilFU=");  
+              "Udb332b1f0570d0d9258c5961a6300554", "要傳送的訊息testtest", "xW4rg6ixb5g3CGkPS1460f+BojsYHKIe9xtFmuV3ZwDdUR2JKVY+md4mmXt6n0nvoys8DElYuy29lx76Xl6/+hQHdjbX2tGtsW5p0dK14UORQ0PGJOGSF/8SPwGkUafmGHXkQkYjmDfHqQv6sXsN/AdB04t89/1O/w1cDnyilFU=");  
             return new string[] { "value1", "value2" };
         }
 
