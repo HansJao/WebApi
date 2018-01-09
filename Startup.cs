@@ -23,6 +23,9 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var configManager = new ConfigManager();
+            Configuration.GetSection("Config").Bind(configManager);
+            ConfigProvider.ConnectionString = configManager.ConnectionString;
             services.AddMvc();
         }
 

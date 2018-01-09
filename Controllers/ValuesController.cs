@@ -8,6 +8,7 @@ using System.Web;
 using System.IO;
 using WebApi.Adapter;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 
 namespace WebApi.Controllers
 {
@@ -19,7 +20,7 @@ namespace WebApi.Controllers
         public string Get()
         {
             DataAdapter da = new DataAdapter();
-            var result = da.Get();
+            var result = da.Get(1);
             var jsonString = JsonConvert.SerializeObject(result);
             return jsonString;
         }
@@ -58,18 +59,30 @@ namespace WebApi.Controllers
             try
             {
                 using (StreamReader reader = new StreamReader(Request.Body))
-            {
-                postData = reader.ReadToEnd();
-            }
+                {
+                    postData = reader.ReadToEnd();
+                }
                 //取得 http Post RawData(should be JSON)
                 //postData = Request.Body.ReadAsync;//Request.Content.ReadAsStringAsync().Result;
                 //剖析JSON
                 var ReceivedMessage = isRock.LineBot.Utility.Parsing(postData);
                 //回覆訊息
                 string Message;
-                Message = "你說了:" + ReceivedMessage.events[0].message.text;
+                Message = ReceivedMessage.events[0].message.text;
+                int value = 0;
+                var result = string.Empty;
+                if (int.TryParse(Message, out value))
+                {
+                    DataAdapter da = new DataAdapter();
+                    result = da.Get(value).FirstOrDefault().Column1;
+                }
+                else
+                {
+                    result = "請輸入數字好ㄇ!!";
+                }
+
                 //回覆用戶
-                isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, Message, ChannelAccessToken);
+                isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, result, ChannelAccessToken);
                 //回覆API OK
                 return Ok();
             }

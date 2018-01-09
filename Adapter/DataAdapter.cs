@@ -1,24 +1,25 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
+using WebApi.Common;
 using WebApi.DataClass;
 
 namespace WebApi.Adapter
 {
     public class DataAdapter
     {
-
-        private string conStr = "Server=tcp:hansdb.database.windows.net,1433;Initial Catalog=HansDB;Persist Security Info=False;User ID=vigorhan;Password=yuiop_7410;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        public List<DataObject> Get()
+        public List<DataObject> Get(int TableNameId)
         {
-            var result = new List<DataObject>();
-           using(var con = new SqlConnection(conStr))
-           {
-               result = con.Query<DataObject>("select * from TableName").ToList();
-           }
+            var commandText = "select * from TableName Where TableNameId=@TableNameId";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@TableNameId",SqlDbType.Int){Value = TableNameId}
+            };
+            var result = DapperHelper.QueryCollection<DataObject>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 
-           return result;
-        } 
-    }    
+            return result.ToList();
+        }
+    }
 }
