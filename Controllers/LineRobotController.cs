@@ -10,6 +10,7 @@ namespace WebApi.Controllers
     public class LineRobotController : Controller
     {
         [HttpPost]
+        [Route("LinebotAccess")]
         public IActionResult LinebotAccess()
         {
             string postData = string.Empty;
