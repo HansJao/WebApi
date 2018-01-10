@@ -35,7 +35,8 @@ namespace WebApi.Controllers
                         result = "修改";
                         break;
                     case "?":
-                        result = "查詢";
+                        var count = SearchArea(Message.Substring(1));
+                        result = "查詢" + count;
                         break;
                     case "+":
                         var splitMessage = Message.Split(' ');
@@ -45,7 +46,7 @@ namespace WebApi.Controllers
                         }
                         else
                         {
-                            Insert(splitMessage[0], splitMessage[1], Convert.ToInt32(splitMessage[2]), splitMessage[3]);
+                            Insert(splitMessage[0].Substring(1), splitMessage[1], Convert.ToInt32(splitMessage[2]), splitMessage[3]);
                             result = "新增成功";
                         }
                         break;
@@ -86,6 +87,14 @@ namespace WebApi.Controllers
             DataAdapter da = new DataAdapter();
             var result = da.Insert(area, name, quantity, userName);
             //return result;
+        }
+
+        private int SearchArea(string area)
+        {
+
+            DataAdapter da = new DataAdapter();
+            var result = da.SearchArea(area);
+            return result;
         }
     }
 }
