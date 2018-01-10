@@ -38,7 +38,16 @@ namespace WebApi.Controllers
                         result = "查詢";
                         break;
                     case "+":
-                        result = "新增";
+                        var splitMessage = Message.Split(' ');
+                        if (splitMessage.Count() < 4)
+                        {
+                            result = "少了某些參數";
+                        }
+                        else
+                        {
+                            Insert(splitMessage[0], splitMessage[1], Convert.ToInt32(splitMessage[2]), splitMessage[3]);
+                            result = "新增成功";
+                        }
                         break;
                     case "-":
                         result = "刪除";
@@ -68,6 +77,15 @@ namespace WebApi.Controllers
             {
                 return Ok(ex);
             }
+        }
+
+
+        private void Insert(string area, string name, int quantity, string userName)
+        {
+
+            DataAdapter da = new DataAdapter();
+            var result = da.Insert(area, name, quantity, userName);
+            //return result;
         }
     }
 }

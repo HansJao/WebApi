@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,6 +21,25 @@ namespace WebApi.Adapter
             var result = DapperHelper.QueryCollection<DataObject>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 
             return result.ToList();
+        }
+
+        public int Insert(string area, string name, int quantity, string userName)
+        {
+            var commandText = @"insert into dbo.TextileStore
+                                (Area,Name,Quantity,ModifyUser,ModifyDate)
+                                VALUES
+                                (@Area,@Name,@Quantity,@ModifyUser,@ModifyDate)";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Area",SqlDbType.Text){Value = area},
+                new SqlParameter("@Name",SqlDbType.Text){Value = name},
+                new SqlParameter("@Quantity",SqlDbType.Int){Value = quantity},
+                new SqlParameter("@ModifyUser",SqlDbType.Text){Value = userName},
+                new SqlParameter("@ModifyDate",SqlDbType.DateTime){Value = DateTime.Now},
+            };
+            var result = DapperHelper.QueryCollection<int>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters).FirstOrDefault();
+
+            return result;
         }
     }
 }
