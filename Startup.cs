@@ -26,6 +26,7 @@ namespace WebApi
             var configManager = new ConfigManager();
             Configuration.GetSection("Config").Bind(configManager);
             ConfigProvider.ConnectionString = configManager.ConnectionString;
+            ConfigProvider.ChannelAccessToken = configManager.ChannelAccessToken;
             services.AddMvc();
         }
 
