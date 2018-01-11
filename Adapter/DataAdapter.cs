@@ -44,7 +44,7 @@ namespace WebApi.Adapter
 
         public IEnumerable<TextileStore> SearchArea(string area)
         {
-            var commandText = @"select * from TextileStore Where Area like '@Area'";
+            var commandText = @"select * from TextileStore Where Area like @Area";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Area",SqlDbType.Text){Value = area}

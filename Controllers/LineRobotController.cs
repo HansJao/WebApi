@@ -97,9 +97,13 @@ namespace WebApi.Controllers
             DataAdapter da = new DataAdapter();
             var result = da.SearchArea(area);
             var replyMessage = string.Empty;
-            foreach(var textile in result)
+            foreach (var textile in result)
             {
-                replyMessage = string.Concat(textile.Area,textile.Name,textile.Quantity,textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"),textile.ModifyUser,"\n");
+                replyMessage = string.Concat("地點:", textile.Area, " ",
+                                             "名稱:", textile.Name, " ",
+                                             "數量:", textile.Quantity, " ",
+                                             "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), " ",
+                                             "修改人員:", textile.ModifyUser, "\n");
             }
             return replyMessage;
         }
