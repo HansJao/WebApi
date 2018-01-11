@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Adapter;
+using WebApi.DataClass;
 
 namespace WebApi.Controllers
 {
@@ -35,18 +37,18 @@ namespace WebApi.Controllers
                         result = "修改";
                         break;
                     case "?":
-                        var count = SearchArea(Message.Substring(1));
-                        result = "查詢" + count;
+                        var reply = SearchArea(Message.Substring(1));
+                        result = "查詢結果:\n" + reply;
                         break;
                     case "+":
                         var splitMessage = Message.Split(' ');
-                        if (splitMessage.Count() < 4)
+                        if (splitMessage.Count() < 3)
                         {
                             result = "少了某些參數";
                         }
                         else
                         {
-                            Insert(splitMessage[0].Substring(1), splitMessage[1], Convert.ToInt32(splitMessage[2]), splitMessage[3]);
+                            Insert(splitMessage[0].Substring(1), splitMessage[1], Convert.ToInt32(splitMessage[2]), ReceivedMessage.events[0].source.userId);
                             result = "新增成功";
                         }
                         break;
@@ -54,7 +56,7 @@ namespace WebApi.Controllers
                         result = "刪除";
                         break;
                     default:
-                        result = "指令錯誤!! '+':新增 ,'-':刪除 ,'?':查詢 ,'!':修改";
+                        result = "指令錯誤!! \n'+':新增 \n'-':刪除 \n'?':查詢 \n'!':修改";
                         break;
                 }
                 // int value = 0;
@@ -89,12 +91,17 @@ namespace WebApi.Controllers
             //return result;
         }
 
-        private int SearchArea(string area)
+        private string SearchArea(string area)
         {
 
             DataAdapter da = new DataAdapter();
             var result = da.SearchArea(area);
-            return result;
+            var replyMessage = string.Empty;
+            foreach(var textile in result)
+            {
+                replyMessage = string.Concat(textile.Area,textile.Name,textile.Quantity,textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"),textile.ModifyUser,"\n");
+            }
+            return replyMessage;
         }
     }
 }

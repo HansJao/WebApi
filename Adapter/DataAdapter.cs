@@ -42,14 +42,14 @@ namespace WebApi.Adapter
             return result;
         }
 
-        public int SearchArea(string area)
+        public IEnumerable<TextileStore> SearchArea(string area)
         {
-            var commandText = @"select * from TextileStore Where Area like '%@Area%'";
+            var commandText = @"select * from TextileStore Where Area like '@Area'";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Area",SqlDbType.Text){Value = area}
             };
-            var result = DapperHelper.QueryCollection<int>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters).FirstOrDefault();
+            var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 
             return result;
         }
