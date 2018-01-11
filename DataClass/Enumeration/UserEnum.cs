@@ -7,7 +7,7 @@ namespace WebApi.DataClass.Enumeration
         public struct UserName
         {
             [Description("晟瀚")]
-            public const string Hans = "U206d25c2ea6bd87c17655609a1c37cb8";
+            public const string Hans = "Udb332b1f0570d0d9258c5961a6300554";
         }
     }
 }
