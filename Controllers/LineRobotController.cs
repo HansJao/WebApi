@@ -68,9 +68,11 @@ namespace WebApi.Controllers
                     case "-":
                         result = "刪除";
                         break;
-                    default:
+                    case "help":
                         result = @"指令錯誤!! 正確指令如下\n======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n! [顆顆,也還沒做]";
                         break;
+                    default:
+                        return Ok();
                 }
 
                 //回覆用戶
