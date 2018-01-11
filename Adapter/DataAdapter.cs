@@ -28,13 +28,14 @@ namespace WebApi.Adapter
             var commandText = @"insert into dbo.TextileStore
                                 (Area,Name,Quantity,ModifyUser,ModifyDate)
                                 VALUES
-                                (@Area,@Name,@Quantity,@ModifyUser,@ModifyDate)";
+                                (@Area,@Name,@Quantity,@ModifyUser,@ModifyDate)
+                                SELECT @@ROWCOUNT AS DELETED;" ;
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@Area",SqlDbType.Text){Value = area},
-                new SqlParameter("@Name",SqlDbType.Text){Value = name},
+                new SqlParameter("@Area",SqlDbType.NVarChar){Value = area},
+                new SqlParameter("@Name",SqlDbType.NVarChar){Value = name},
                 new SqlParameter("@Quantity",SqlDbType.Int){Value = quantity},
-                new SqlParameter("@ModifyUser",SqlDbType.Text){Value = userName},
+                new SqlParameter("@ModifyUser",SqlDbType.NVarChar){Value = userName},
                 new SqlParameter("@ModifyDate",SqlDbType.DateTime){Value = DateTime.Now},
             };
             var result = DapperHelper.QueryCollection<int>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters).FirstOrDefault();

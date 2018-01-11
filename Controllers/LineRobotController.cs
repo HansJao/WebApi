@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Adapter;
 using WebApi.DataClass;
@@ -29,7 +28,7 @@ namespace WebApi.Controllers
                 var ReceivedMessage = isRock.LineBot.Utility.Parsing(postData);
                 //回覆訊息
                 string Message;
-                Message = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(ReceivedMessage.events[0].message.text));
+                Message = ReceivedMessage.events[0].message.text;
                 var switchFunction = Message.Substring(0, 1);
                 var result = string.Empty;
                 switch (switchFunction)
@@ -49,8 +48,11 @@ namespace WebApi.Controllers
                         }
                         else
                         {
-                            Insert(splitMessage[0].Substring(1), splitMessage[1], Convert.ToInt32(splitMessage[2]), ReceivedMessage.events[0].source.userId);
-                            result = "新增成功";
+                            var success = Insert(splitMessage[0].Substring(1), splitMessage[1], Convert.ToInt32(splitMessage[2]), ReceivedMessage.events[0].source.userId);
+                            if (success)
+                                result = "新增成功";
+                            else
+                                result = "新增失敗";
                         }
                         break;
                     case "-":
@@ -84,12 +86,12 @@ namespace WebApi.Controllers
         }
 
 
-        private void Insert(string area, string name, int quantity, string userName)
+        private bool Insert(string area, string name, int quantity, string userName)
         {
 
             DataAdapter da = new DataAdapter();
             var result = da.Insert(area, name, quantity, userName);
-            //return result;
+            return result == 1;
         }
 
         private string SearchArea(string area)
