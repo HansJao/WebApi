@@ -48,7 +48,7 @@ namespace WebApi.Adapter
             var commandText = @"SELECT * FROM TextileStore WHERE Area LIKE @Area";
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@Area",SqlDbType.Text){Value = string.Concat("%",area,"%")}
+                new SqlParameter("@Area",SqlDbType.NVarChar){Value = string.Concat("%",area,"%")}
             };
             var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 
@@ -60,7 +60,7 @@ namespace WebApi.Adapter
             var commandText = @"SELECT * FROM TextileStore WHERE Name LIKE @Name";
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@Name",SqlDbType.Text){Value = string.Concat("%",name,"%")}
+                new SqlParameter("@Name",SqlDbType.NVarChar){Value = string.Concat("%",name,"%")}
             };
             var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 
