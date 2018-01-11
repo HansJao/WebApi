@@ -99,11 +99,11 @@ namespace WebApi.Controllers
             var replyMessage = string.Empty;
             foreach (var textile in result)
             {
-                replyMessage = string.Concat("地點:", textile.Area, " ",
-                                             "名稱:", textile.Name, " ",
-                                             "數量:", textile.Quantity, " ",
-                                             "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), " ",
-                                             "修改人員:", textile.ModifyUser, "\n");
+                replyMessage += string.Concat("地點:", textile.Area, "\n",
+                                             "名稱:", textile.Name, "\n",
+                                             "數量:", textile.Quantity, "\n",
+                                             "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
+                                             "修改人員:", textile.ModifyUser, "\n","---------------------","\n");
             }
             return replyMessage;
         }
