@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Adapter;
 using WebApi.DataClass;
@@ -28,7 +29,7 @@ namespace WebApi.Controllers
                 var ReceivedMessage = isRock.LineBot.Utility.Parsing(postData);
                 //回覆訊息
                 string Message;
-                Message = ReceivedMessage.events[0].message.text;
+                Message = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(ReceivedMessage.events[0].message.text));
                 var switchFunction = Message.Substring(0, 1);
                 var result = string.Empty;
                 switch (switchFunction)
@@ -103,7 +104,7 @@ namespace WebApi.Controllers
                                              "名稱:", textile.Name, "\n",
                                              "數量:", textile.Quantity, "\n",
                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
-                                             "修改人員:", textile.ModifyUser, "\n","---------------------","\n");
+                                             "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
             }
             return replyMessage;
         }
