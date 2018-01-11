@@ -47,7 +47,7 @@ namespace WebApi.Adapter
             var commandText = @"select * from TextileStore Where Area like @Area";
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@Area",SqlDbType.Text){Value = area}
+                new SqlParameter("@Area",SqlDbType.Text){Value = string.Concat("%",area,"%")}
             };
             var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 
