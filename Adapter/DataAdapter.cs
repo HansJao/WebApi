@@ -25,11 +25,11 @@ namespace WebApi.Adapter
 
         public int Insert(string area, string name, int quantity, string userName)
         {
-            var commandText = @"insert into dbo.TextileStore
+            var commandText = @"INSERT INTO dbo.TextileStore
                                 (Area,Name,Quantity,ModifyUser,ModifyDate)
                                 VALUES
                                 (@Area,@Name,@Quantity,@ModifyUser,@ModifyDate)
-                                SELECT @@ROWCOUNT AS DELETED;" ;
+                                SELECT @@ROWCOUNT AS DELETED;";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Area",SqlDbType.NVarChar){Value = area},
@@ -45,10 +45,22 @@ namespace WebApi.Adapter
 
         public IEnumerable<TextileStore> SearchArea(string area)
         {
-            var commandText = @"select * from TextileStore Where Area like @Area";
+            var commandText = @"SELECT * FROM TextileStore WHERE Area LIKE @Area";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Area",SqlDbType.Text){Value = string.Concat("%",area,"%")}
+            };
+            var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
+
+            return result;
+        }
+
+        public IEnumerable<TextileStore> SearchName(string name)
+        {
+            var commandText = @"SELECT * FROM TextileStore WHERE Name LIKE @Name";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Name",SqlDbType.Text){Value = string.Concat("%",name,"%")}
             };
             var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
 

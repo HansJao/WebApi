@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Adapter;
 using WebApi.DataClass;
+using WebApi.DataClass.Enumeration;
 
 namespace WebApi.Controllers
 {
@@ -29,26 +30,35 @@ namespace WebApi.Controllers
                 //回覆訊息
                 string Message;
                 Message = ReceivedMessage.events[0].message.text;
-                var switchFunction = Message.Substring(0, 1);
+                var switchFunction = Message.Split(' ');
                 var result = string.Empty;
-                switch (switchFunction)
+                switch (switchFunction.FirstOrDefault())
                 {
                     case "!":
                         result = "修改";
                         break;
-                    case "?":
-                        var reply = SearchArea(Message.Substring(1));
-                        result = "查詢結果:\n" + reply;
+                    case "?倉庫":
+                        var areaName = switchFunction[1];
+                        var areaResult = SearchArea(areaName);
+                        result = "查詢結果:\n" + areaResult;
+                        break;
+                    case "?名稱":
+                        var Namename = switchFunction[1];
+                        var nameResult = SearchName(Namename);
+                        result = "查詢結果:\n" + nameResult;
                         break;
                     case "+":
-                        var splitMessage = Message.Split(' ');
-                        if (splitMessage.Count() < 3)
+                        if (switchFunction.Count() < 4)
                         {
-                            result = "少了某些參數";
+                            result = "少了某些參數!";
                         }
                         else
                         {
-                            var success = Insert(splitMessage[0].Substring(1), splitMessage[1], Convert.ToInt32(splitMessage[2]), ReceivedMessage.events[0].source.userId);
+                            var area = switchFunction[1];
+                            var name = switchFunction[2];
+                            var quantity = switchFunction[3];
+                            var userName = GetUserName(ReceivedMessage.events[0].source.userId);
+                            var success = Insert(area, name, Convert.ToInt32(quantity), userName);
                             if (success)
                                 result = "新增成功";
                             else
@@ -62,17 +72,6 @@ namespace WebApi.Controllers
                         result = "指令錯誤!! \n'+':新增 \n'-':刪除 \n'?':查詢 \n'!':修改";
                         break;
                 }
-                // int value = 0;
-
-                // if (int.TryParse(Message, out value))
-                // {
-                //     DataAdapter da = new DataAdapter();
-                //     result = da.Get(value).FirstOrDefault().Column1;
-                // }
-                // else
-                // {
-                //     result = "請輸入數字好ㄇ!!";
-                // }
 
                 //回覆用戶
                 isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, result, ConfigProvider.ChannelAccessToken);
@@ -82,6 +81,16 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return Ok(ex);
+            }
+        }
+        private string GetUserName(string userID)
+        {
+            switch (userID)
+            {
+                case UserEnum.UserName.Hans:
+                    return "晟瀚";
+                default:
+                    return userID;
             }
         }
 
@@ -96,17 +105,32 @@ namespace WebApi.Controllers
 
         private string SearchArea(string area)
         {
-
             DataAdapter da = new DataAdapter();
             var result = da.SearchArea(area);
             var replyMessage = string.Empty;
             foreach (var textile in result)
             {
                 replyMessage += string.Concat("地點:", textile.Area, "\n",
-                                             "名稱:", textile.Name, "\n",
-                                             "數量:", textile.Quantity, "\n",
-                                             "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
-                                             "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
+                                              "名稱:", textile.Name, "\n",
+                                              "數量:", textile.Quantity, "\n",
+                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
+                                              "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
+            }
+            return replyMessage;
+        }
+
+        private string SearchName(string name)
+        {
+            DataAdapter da = new DataAdapter();
+            var result = da.SearchName(name);
+            var replyMessage = string.Empty;
+            foreach (var textile in result)
+            {
+                replyMessage += string.Concat("地點:", textile.Area, "\n",
+                                              "名稱:", textile.Name, "\n",
+                                              "數量:", textile.Quantity, "\n",
+                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
+                                              "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
             }
             return replyMessage;
         }
