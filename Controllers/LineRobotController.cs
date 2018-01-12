@@ -74,7 +74,7 @@ namespace WebApi.Controllers
                             result = "刪除失敗";
                         break;
                     case "help":
-                        result = @"======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n- [顆顆,也還沒做]";
+                        result = @"======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n- [編號]";
                         break;
                     default:
                         return Ok();
@@ -105,15 +105,21 @@ namespace WebApi.Controllers
         }
         private string GetUserName(string userID)
         {
-            switch (userID)
+            if (ConfigProvider.UserIDList.Count() == 0 || ConfigProvider.UserIDList.Where(w => w.Value == userID).Count() == 0)
             {
-                case UserEnum.UserName.Hans:
-                    return "晟瀚";
-                case UserEnum.UserName.Syuan:
-                    return "韻琁";
-                default:
-                    return userID;
+                return userID;
             }
+            var user = ConfigProvider.UserIDList.Where(w => w.Value == userID).FirstOrDefault();
+            return user.Key;
+            // switch (userID)
+            // {
+            //     case UserEnum.UserName.Hans:
+            //         return "晟瀚";
+            //     case UserEnum.UserName.Syuan:
+            //         return "韻琁";
+            //     default:
+            //         return userID;
+            // }
         }
 
 
