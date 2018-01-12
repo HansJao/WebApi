@@ -32,7 +32,7 @@ namespace WebApi.Controllers
                 Message = ReceivedMessage.events[0].message.text;
                 var switchFunction = Message.Split(' ');
                 var result = string.Empty;
-                switch (switchFunction.FirstOrDefault())
+                switch (ConvertToNarrow(switchFunction.FirstOrDefault()))
                 {
                     case "!":
                         result = "修改";
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
                         result = "刪除";
                         break;
                     case "help":
-                        result = @"指令錯誤!! 正確指令如下\n======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n! [顆顆,也還沒做]";
+                        result = @"======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n! [顆顆,也還沒做]";
                         break;
                     default:
                         return Ok();
@@ -84,6 +84,13 @@ namespace WebApi.Controllers
             {
                 return Ok(ex);
             }
+        }
+
+        private string ConvertToNarrow(string text)
+        {
+            var narrow = string.Empty;
+            narrow = text.Replace('？', '?').Replace('＋', '+').Replace('－', '-').Replace('！', '!');
+            return narrow;
         }
         private string GetUserName(string userID)
         {
