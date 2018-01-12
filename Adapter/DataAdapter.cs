@@ -29,7 +29,7 @@ namespace WebApi.Adapter
                                 (Area,Name,Quantity,ModifyUser,ModifyDate)
                                 VALUES
                                 (@Area,@Name,@Quantity,@ModifyUser,@ModifyDate)
-                                SELECT @@ROWCOUNT AS DELETED;";
+                                SELECT @@ROWCOUNT AS InsertRow;";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Area",SqlDbType.NVarChar){Value = area},
@@ -63,6 +63,19 @@ namespace WebApi.Adapter
                 new SqlParameter("@Name",SqlDbType.NVarChar){Value = string.Concat("%",name,"%")}
             };
             var result = DapperHelper.QueryCollection<TextileStore>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters);
+
+            return result;
+        }
+
+        public int DelectByID(int id)
+        {
+            var commandText = @"DELETE FROM TextileStore WHERE Id = @Id
+                                SELECT @@ROWCOUNT AS DeleteRow;";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@Id",SqlDbType.Int){Value = id}
+            };
+            var result = DapperHelper.QueryCollection<int>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters).FirstOrDefault();
 
             return result;
         }

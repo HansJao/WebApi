@@ -6,6 +6,7 @@ public class ConfigManager
 
 public static class ConfigProvider
 {
+        public static bool IsDevelopment { get; set; }
         public static string ConnectionString { get; set; }
         public static string ChannelAccessToken { get; set; }
 }

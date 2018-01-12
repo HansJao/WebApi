@@ -58,15 +58,20 @@ namespace WebApi.Controllers
                             var name = switchFunction[2];
                             var quantity = switchFunction[3];
                             var userName = GetUserName(ReceivedMessage.events[0].source.userId);
-                            var success = Insert(area, name, Convert.ToInt32(quantity), userName);
-                            if (success)
+                            var successInsert = Insert(area, name, Convert.ToInt32(quantity), userName);
+                            if (successInsert)
                                 result = "新增成功";
                             else
                                 result = "新增失敗";
                         }
                         break;
                     case "-":
-                        result = "刪除";
+                        var id = Convert.ToInt32(switchFunction[1]);
+                        var successDelete = DeleteById(id);
+                        if (successDelete)
+                            result = "刪除成功";
+                        else
+                            result = "刪除失敗";
                         break;
                     case "help":
                         result = @"======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n- [顆顆,也還沒做]";
@@ -74,11 +79,17 @@ namespace WebApi.Controllers
                     default:
                         return Ok();
                 }
-
-                //回覆用戶
-                isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, result, ConfigProvider.ChannelAccessToken);
-                //回覆API OK
-                return Ok();
+                if (!ConfigProvider.IsDevelopment)
+                {
+                    //回覆用戶
+                    isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, result, ConfigProvider.ChannelAccessToken);
+                    return Ok();
+                }
+                else
+                {
+                    //回覆API OK
+                    return Ok(result);
+                }
             }
             catch (Exception ex)
             {
@@ -99,7 +110,7 @@ namespace WebApi.Controllers
                 case UserEnum.UserName.Hans:
                     return "晟瀚";
                 case UserEnum.UserName.Syuan:
-                    return "韻琁空空";
+                    return "韻琁";
                 default:
                     return userID;
             }
@@ -114,6 +125,13 @@ namespace WebApi.Controllers
             return result == 1;
         }
 
+        private bool DeleteById(int id)
+        {
+            DataAdapter da = new DataAdapter();
+            var result = da.DelectByID(id);
+            return result == 1;
+        }
+
         private string SearchArea(string area)
         {
             DataAdapter da = new DataAdapter();
@@ -121,10 +139,11 @@ namespace WebApi.Controllers
             var replyMessage = string.Empty;
             foreach (var textile in result)
             {
-                replyMessage += string.Concat("地點:", textile.Area, "\n",
+                replyMessage += string.Concat("編號:", textile.ID, "\n",
+                                              "地點:", textile.Area, "\n",
                                               "名稱:", textile.Name, "\n",
                                               "數量:", textile.Quantity, "\n",
-                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
+                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd HH:mm:ss"), "\n",
                                               "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
             }
             return replyMessage;
@@ -137,10 +156,11 @@ namespace WebApi.Controllers
             var replyMessage = string.Empty;
             foreach (var textile in result)
             {
-                replyMessage += string.Concat("地點:", textile.Area, "\n",
+                replyMessage += string.Concat("編號:", textile.ID, "\n",
+                                              "地點:", textile.Area, "\n",
                                               "名稱:", textile.Name, "\n",
                                               "數量:", textile.Quantity, "\n",
-                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd hh:mm:ss"), "\n",
+                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd HH:mm:ss"), "\n",
                                               "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
             }
             return replyMessage;
