@@ -32,7 +32,7 @@ namespace WebApi.Controllers
                 Message = ReceivedMessage.events[0].message.text;
                 var switchFunction = Message.Split(' ');
                 var result = string.Empty;
-                switch (ConvertToNarrow(switchFunction.FirstOrDefault()))
+                switch (ConvertToNarrow(switchFunction.FirstOrDefault()).ToLower())
                 {
                     case "!":
                         result = "修改";
@@ -48,9 +48,9 @@ namespace WebApi.Controllers
                         result = "查詢結果:\n" + nameResult;
                         break;
                     case "+":
-                        if (switchFunction.Count() < 4)
+                        if (switchFunction.Count() != 7)
                         {
-                            result = "少了某些參數!";
+                            result = "輸入的參數錯誤!!";
                         }
                         else
                         {
