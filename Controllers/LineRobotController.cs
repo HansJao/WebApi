@@ -84,8 +84,34 @@ namespace WebApi.Controllers
                 }
                 if (!ConfigProvider.IsDevelopment)
                 {
-                    //回覆用戶
-                    isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, result, ConfigProvider.ChannelAccessToken);
+                    if (ConvertToNarrow(switchFunction.FirstOrDefault()).ToLower() == "!")
+                    {
+                        var actions = new List<isRock.LineBot.TemplateActionBase>();
+                        actions.Add(new isRock.LineBot.MessageAction()
+                        { label = "點選這邊等同用戶直接輸入某訊息", text = "?倉庫 a" });
+                        actions.Add(new isRock.LineBot.UriAction()
+                        { label = "點這邊開啟網頁", uri = new Uri("http://www.google.com") });
+                        actions.Add(new isRock.LineBot.PostbackAction()
+                        { label = "點這邊發生postack", data = "help" });
+                        var textileStoreList = TextileStoreList("a");
+
+                        var column = textileStoreList.Select(s => new isRock.LineBot.Column()
+                        {
+                            //thumbnailImageUrl = new Uri(string.Empty),
+                            title = s.Area,
+                            text = s.Name,
+                            actions = actions
+
+                        }).Take(5).ToList();
+                        isRock.LineBot.CarouselTemplate test = new isRock.LineBot.CarouselTemplate()
+                        {
+                            columns = column
+                        };
+                        isRock.LineBot.Utility.PushTemplateMessage(ReceivedMessage.events[0].source.userId, test, ConfigProvider.ChannelAccessToken);
+                    }
+                    else
+                        //回覆用戶
+                        isRock.LineBot.Utility.ReplyMessage(ReceivedMessage.events[0].replyToken, result, ConfigProvider.ChannelAccessToken);
                     return Ok();
                 }
                 else
@@ -139,6 +165,13 @@ namespace WebApi.Controllers
             DataAdapter da = new DataAdapter();
             var result = da.DelectByID(id);
             return result == 1;
+        }
+
+        private IEnumerable<TextileStore> TextileStoreList(string area)
+        {
+            DataAdapter da = new DataAdapter();
+            var result = da.SearchArea(area);
+            return result;
         }
 
         private string SearchArea(string area)
