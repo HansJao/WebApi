@@ -88,26 +88,27 @@ namespace WebApi.Controllers
                     {
                         var actions = new List<isRock.LineBot.TemplateActionBase>();
                         actions.Add(new isRock.LineBot.MessageAction()
-                        { label = "點選這邊等同用戶直接輸入某訊息", text = "?倉庫 a" });
+                        { label = "指令查詢", text = "help" });
                         actions.Add(new isRock.LineBot.UriAction()
-                        { label = "點這邊開啟網頁", uri = new Uri("http://www.google.com") });
-                        actions.Add(new isRock.LineBot.PostbackAction()
-                        { label = "點這邊發生postack", data = "help" });
-                        var textileStoreList = TextileStoreList("a");
+                        { label = "開啟網頁", uri = new Uri("http://www.google.com") });
+                        // var textileStoreList = TextileStoreList("a");
 
-                        var column = textileStoreList.Select(s => new isRock.LineBot.Column()
+                        // var column = textileStoreList.Select(s => new isRock.LineBot.Column()
+                        // {
+                        //     //thumbnailImageUrl = new Uri(string.Empty),
+                        //     title = s.Area,
+                        //     text = s.Name,
+                        //     actions = actions
+
+                        // }).Take(5).ToList();
+                        isRock.LineBot.ButtonsTemplate test = new isRock.LineBot.ButtonsTemplate()
                         {
                             //thumbnailImageUrl = new Uri(string.Empty),
-                            title = s.Area,
-                            text = s.Name,
+                            title = "testTitle",
+                            text = "testText",
                             actions = actions
-
-                        }).Take(5).ToList();
-                        isRock.LineBot.CarouselTemplate test = new isRock.LineBot.CarouselTemplate()
-                        {
-                            columns = column
                         };
-                        isRock.LineBot.Utility.PushTemplateMessage(ReceivedMessage.events[0].source.userId, test, ConfigProvider.ChannelAccessToken);
+                        isRock.LineBot.Utility.ReplyTemplateMessage(ReceivedMessage.events[0].replyToken, test, ConfigProvider.ChannelAccessToken);
                     }
                     else
                         //回覆用戶
