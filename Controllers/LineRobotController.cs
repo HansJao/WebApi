@@ -56,9 +56,12 @@ namespace WebApi.Controllers
                         {
                             var area = switchFunction[1];
                             var name = switchFunction[2];
-                            var quantity = switchFunction[3];
+                            var color = switchFunction[3];
+                            var position = switchFunction[4];
+                            var quantity = switchFunction[5];
+                            var memo = switchFunction[6];
                             var userName = GetUserName(ReceivedMessage.events[0].source.userId);
-                            var successInsert = Insert(area, name, Convert.ToInt32(quantity), userName);
+                            var successInsert = Insert(area, name, color, position, Convert.ToInt32(quantity), userName, memo);
                             if (successInsert)
                                 result = "新增成功";
                             else
@@ -74,7 +77,7 @@ namespace WebApi.Controllers
                             result = "刪除失敗";
                         break;
                     case "help":
-                        result = @"======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [數量] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n- [編號]";
+                        result = @"======查詢指令======\n?倉庫 [倉庫名稱] \n?名稱 [布種名稱] \n======新增指令======\n+ [倉庫名稱] [布種名稱] [顏色] [儲位] [數量] [備註] \n======修改指令======\n! [顆顆,還沒做]\n======刪除指令======\n- [編號]";
                         break;
                     default:
                         return Ok();
@@ -123,11 +126,11 @@ namespace WebApi.Controllers
         }
 
 
-        private bool Insert(string area, string name, int quantity, string userName)
+        private bool Insert(string area, string name, string color, string position, int quantity, string userName, string memo)
         {
 
             DataAdapter da = new DataAdapter();
-            var result = da.Insert(area, name, quantity, userName);
+            var result = da.Insert(area, name, color, position, quantity, userName, memo);
             return result == 1;
         }
 
@@ -142,13 +145,22 @@ namespace WebApi.Controllers
         {
             DataAdapter da = new DataAdapter();
             var result = da.SearchArea(area);
+            var replyMessage = GetReplyMessage(result);
+            return replyMessage;
+        }
+
+        private string GetReplyMessage(IEnumerable<TextileStore> textileStoreList)
+        {
             var replyMessage = string.Empty;
-            foreach (var textile in result)
+            foreach (var textile in textileStoreList)
             {
                 replyMessage += string.Concat("編號:", textile.ID, "\n",
                                               "地點:", textile.Area, "\n",
                                               "名稱:", textile.Name, "\n",
+                                              "顏色:", textile.Color, "\n",
+                                              "儲位:", textile.Position, "\n",
                                               "數量:", textile.Quantity, "\n",
+                                              "備註:", textile.Memo, "\n",
                                               "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd HH:mm:ss"), "\n",
                                               "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
             }
@@ -159,16 +171,7 @@ namespace WebApi.Controllers
         {
             DataAdapter da = new DataAdapter();
             var result = da.SearchName(name);
-            var replyMessage = string.Empty;
-            foreach (var textile in result)
-            {
-                replyMessage += string.Concat("編號:", textile.ID, "\n",
-                                              "地點:", textile.Area, "\n",
-                                              "名稱:", textile.Name, "\n",
-                                              "數量:", textile.Quantity, "\n",
-                                              "更新時間:", textile.ModifyDate.ToString("yyyy/MM/dd HH:mm:ss"), "\n",
-                                              "修改人員:", textile.ModifyUser, "\n", "---------------------", "\n");
-            }
+            var replyMessage = GetReplyMessage(result);
             return replyMessage;
         }
     }

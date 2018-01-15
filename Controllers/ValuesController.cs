@@ -31,7 +31,7 @@ namespace WebApi.Controllers
         public int Insert()
         {
             DataAdapter da = new DataAdapter();
-            var result = da.Insert("A","CVC",132,"U206d25c2ea6bd87c17655609a1c37cb8");
+            var result = da.Insert("A","CVC","color","11區",132,"U206d25c2ea6bd87c17655609a1c37cb8","備註");
             return result;
         }
 

@@ -23,20 +23,23 @@ namespace WebApi.Adapter
             return result.ToList();
         }
 
-        public int Insert(string area, string name, int quantity, string userName)
+        public int Insert(string area, string name, string color, string position,int quantity,  string userName, string memo)
         {
             var commandText = @"INSERT INTO dbo.TextileStore
-                                (Area,Name,Quantity,ModifyUser,ModifyDate)
+                                (Area,Name,Color,Position,Quantity,ModifyUser,ModifyDate,Memo)
                                 VALUES
-                                (@Area,@Name,@Quantity,@ModifyUser,@ModifyDate)
+                                (@Area,@Name,@Color,@Position,@Quantity,@ModifyUser,@ModifyDate,@Memo)
                                 SELECT @@ROWCOUNT AS InsertRow;";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@Area",SqlDbType.NVarChar){Value = area},
                 new SqlParameter("@Name",SqlDbType.NVarChar){Value = name},
+                new SqlParameter("@Color",SqlDbType.NVarChar){Value = color},
+                new SqlParameter("@Position",SqlDbType.NVarChar){Value = position},
                 new SqlParameter("@Quantity",SqlDbType.Int){Value = quantity},
                 new SqlParameter("@ModifyUser",SqlDbType.NVarChar){Value = userName},
                 new SqlParameter("@ModifyDate",SqlDbType.DateTime){Value = DateTime.Now},
+                new SqlParameter("@Memo",SqlDbType.NVarChar){Value = memo},
             };
             var result = DapperHelper.QueryCollection<int>(ConfigProvider.ConnectionString, CommandType.Text, commandText, parameters).FirstOrDefault();
 
